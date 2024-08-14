@@ -13,9 +13,8 @@ function App() {
   const [lifePoints, setLifePoints] = useState(0);
 
   const [currentQuestion, setCurrentQuestion] = useState("from state");
-  /* const [modalOpen, setModalOpen] = useState(""); */
 
-  let modalOpen = "login";
+  const [modalOpen, setModalOpen] = useState("login");
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
   const modalRef = useRef();
@@ -45,7 +44,7 @@ function App() {
   } */
 
     loginModalRef.current?.showModal();
-    modalOpen = "login";
+    setModalOpen("login");
   }, []);
 
   function handleSendLogin() {
@@ -72,7 +71,7 @@ function App() {
             .then((response) => {
               /* console.log(response.data); */ //here i should receive the current id of the user and the content of the text
 
-              modalOpen = "main";
+              setModalOpen("main");
               setLifePoints(2000);
               setPost([...post, response.data]);
               setShowCursorState(true);
@@ -96,7 +95,7 @@ function App() {
       perficientEmail: userPerficientMail,
       hash: userPerficientMail + userAgent,
     };
-    modalOpen = "answer";
+    setModalOpen("answer");
     const fetchAnswerData = async () => {
       setLoadingSpinner(true);
       axios.post(baseURL, answerObjectToPost).then((response) => {
@@ -190,7 +189,7 @@ function App() {
           id="closeModal"
           onClick={() => {
             modalRef.current?.close();
-            modalOpen = main;
+            setModalOpen(main);
           }}
           className="bg-[#b3b3b3] p-3 m-4 rounded hover:bg-[#535353]"
         >
@@ -216,7 +215,7 @@ function App() {
           if (e.nativeEvent.key == "Escape") {
             e.preventDefault();
             loginModalRef.current?.showModal();
-            modalOpen = login;
+            setModalOpen(login);
           }
         }}
       >
