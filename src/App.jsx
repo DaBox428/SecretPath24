@@ -4,8 +4,8 @@ import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import { ThreeDots } from "react-loader-spinner";
 import TypewriterEffect from "./components/TypewriterEffect";
 import { Cursor } from "react-simple-typewriter";
-import AnimatedNumbers from "react-animated-numbers";
-const baseURL = "https://webhook.site/c5e33fe2-9b7b-433e-bd01-b03728c2aa6f";
+import { AnimatedCounter } from "react-animated-counter";
+const baseURL = "https://webhook.site/c3c4b119-49b1-4698-8e52-343a4b4f11ca";
 
 function App() {
   const [loginValue, setLoginValue] = useState("");
@@ -130,7 +130,12 @@ function App() {
       >
         <p className="">
           Life points:☕
-          {lifePoints}
+          <AnimatedCounter
+            value={lifePoints.toFixed(0)}
+            color="white"
+            fontSize="40px"
+            decimalPrecision={0}
+          />
         </p>
       </div>
       {modalOpen == "main" && (
@@ -144,7 +149,7 @@ function App() {
       <dialog
         id="answerModal"
         ref={modalRef}
-        className="p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/50"
+        className="p-24 border bg-[#121212] rounded-2xl "
       >
         {modalOpen == "answer" && (
           <SnackbarProvider
@@ -209,7 +214,7 @@ function App() {
       <dialog
         id="loginModal"
         ref={loginModalRef}
-        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/50 "
+        className="z-10 p-24 border bg-[#121212] rounded-2xl "
         onClose={(e) => {}}
         onKeyDown={(e) => {
           if (e.nativeEvent.key == "Escape") {
