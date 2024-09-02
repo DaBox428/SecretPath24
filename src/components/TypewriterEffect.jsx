@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Typewriter, useTypewriter } from "react-simple-typewriter";
 
-function TypewriterEffect({ words, isFast }) {
+function TypewriterEffect({ words, isFast, setIsTyping, isTyping }) {
   let wordsString = words;
-  let speed = 0.1;
+  let speed = 1;
 
   if (isFast) {
-    speed = 0.1;
+    speed = 1;
   }
   const [text, helper] = useTypewriter({
     words: [wordsString],
@@ -16,13 +16,16 @@ function TypewriterEffect({ words, isFast }) {
 
   const { isDelete, isType, isDelay, isDone } = helper;
 
+  useEffect(() => {
+    setIsTyping(isType);
+  }, [isType]);
+
   return (
     <>
       <div
         className="text-left font-sans text-base antialiased"
         dangerouslySetInnerHTML={{ __html: text }}
       ></div>
-      {console.log(isDone)}
     </>
   );
 }

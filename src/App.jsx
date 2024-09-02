@@ -1,16 +1,19 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { SnackbarProvider, enqueueSnackbar } from "notistack";
 import { ThreeDots } from "react-loader-spinner";
 import TypewriterEffect from "./components/TypewriterEffect";
 import { Cursor } from "react-simple-typewriter";
 import { AnimatedCounter } from "react-animated-counter";
-const baseURL = "https://webhook.site/c3c4b119-49b1-4698-8e52-343a4b4f11ca";
+
+const baseURL = "http://localhost:27017";
 
 function App() {
   const [loginValue, setLoginValue] = useState("");
-  const [answerValue, setAnswerValue] = useState();
+  const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
+
+  const [isTyping, setIsTyping] = useState(false);
 
   const [currentQuestion, setCurrentQuestion] = useState("from state");
 
@@ -20,7 +23,7 @@ function App() {
   const modalRef = useRef();
   const loginModalRef = useRef();
 
-  const [post, setPost] = useState([""]);
+  const [textContent, setTextContent] = useState([]);
 
   const [loaded, setLoaded] = useState(false);
   const [showCursorState, setShowCursorState] = useState(false);
@@ -28,6 +31,10 @@ function App() {
   function handleContinueClick() {
     modalRef.current?.showModal();
   }
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   React.useEffect(() => {
     //ingresamos con direccion de correo
@@ -43,18 +50,23 @@ function App() {
       "final_question": "insert your answer:" Titulo del modal, parrafo
   } */
 
+    if (modalOpen == "login") {
+      setLifePoints(0);
+    }
+
     loginModalRef.current?.showModal();
     setModalOpen("login");
   }, []);
 
+  // POST LOGIN
   function handleSendLogin() {
     const userAgent = navigator.userAgent.toLowerCase();
     const userPerficientMail = loginValue.toLowerCase();
 
     let loginObjectToSendPost = {
       index: 0,
-      hash: userPerficientMail + userAgent,
-      perficientEmail: userPerficientMail,
+      hash: userPerficientMail.trim() + userAgent.trim(),
+      perficientEmail: userPerficientMail.trim(),
     };
 
     if (!userPerficientMail.includes("@perficient.com")) {
@@ -66,14 +78,16 @@ function App() {
         try {
           setLoadingSpinner(true);
           axios
-            .post(baseURL, loginObjectToSendPost)
+            .post("http://localhost:27017/login", loginObjectToSendPost)
 
             .then((response) => {
-              /* console.log(response.data); */ //here i should receive the current id of the user and the content of the text
-
               setModalOpen("main");
               setLifePoints(2000);
-              setPost([...post, response.data]);
+              response.data.story.forEach((element) => {
+                setTextContent((prevText) => [...prevText, element]);
+              });
+
+              setCurrentQuestion(response.data.currentQuestion);
               setShowCursorState(true);
               setLoadingSpinner(false);
               setLoaded(true);
@@ -86,29 +100,32 @@ function App() {
       fetchingLoginData();
     }
   }
+
+  //POST ANSWER
   function handleSendAnswer() {
     const userAgent = navigator.userAgent.toLowerCase();
     const userPerficientMail = loginValue.toLowerCase();
+
     let answerObjectToPost = {
       id: 1,
-      answer: answerValue,
+
       perficientEmail: userPerficientMail,
-      hash: userPerficientMail + userAgent,
+      hash: userPerficientMail.trim() + userAgent.trim(),
+      answer: answerValue.toLowerCase().trim(),
     };
     setModalOpen("answer");
     const fetchAnswerData = async () => {
       setLoadingSpinner(true);
-      axios.post(baseURL, answerObjectToPost).then((response) => {
-        console.log(response.status, response.data);
+      axios.post(baseURL + "/answer", answerObjectToPost).then((response) => {
         if (response.status == 200) {
           /* setLoadingSpinner(false); */
           //si devuelve 400 sigue el modal, salga un texto rojo que diga que esta mal
           modalRef.current?.close();
 
-          setPost([
-            ...post,
-            "Look, I was gonna go easy on you not to hurt your feelingsBut I'm only going to get this one chance(Six minutes, six minutes)Something's wrong, I can feel itJust a feeling I've gotLike something's about to happenBut I don't know whatIf that means, what I think it means, we're in troubleBig trouble. And if he is as bananas as you sayI'm not taking any chancesYou were just what the doctor ordered I'm beginning to feel like a Rap God, Rap GodAll my people from the front to the back nod, back nodNow who thinks their arms are long enough to slap box, slap box?They said I rap like a robot, so call me rap-botBut for me to rap like a computer must be in my genesI got a laptop in my back pocketMy pen'll go off when I half-cock itGot a fat knot from that rap profitMade a living and a killing off itEver since Bill Clinton was still in officeWith Monica Lewinski feeling on his nutsackI'm an MC still as honestBut as rude and as indecent as all hellSyllables, skill-a-holic (Kill 'em all with)This flippity, dippity-hippity hip-hopYou don't really wanna get into a pissing matchWith this rappity-rapPacking a mack in the back of the Acbackpack rap, crap, yap-yap, yackety-yackand at the exact same timeI attempt these lyrical acrobat stunts while I'm practicing thatI'll still be able to break a motherfuckin' tableOver the back of a couple of faggots and crack it in halfOnly realized it was ironicI was signed to Aftermath after the factHow could I not blow? All I do is drop  bombsFeel my wrath of attackRappers are having a rough time periodHere's a Maxi-Pad It's actually disastrously bad For the wack while I'm masterfully constructing this masterpiece yeah",
-          ]);
+          setTextContent((oldArray) => [...oldArray, response.data.newText]);
+          setCurrentQuestion(response.data.newQuestion);
+          setAnswerValue("");
+          setLoadingSpinner(false);
         } else {
           setLoadingSpinner(false);
           enqueueSnackbar("Thats not the right answer", {
@@ -126,17 +143,17 @@ function App() {
     <>
       <div
         className="text-slate-300 fixed m-24 p-5 z-20 right-5 rounded-3xl px-8
-      bg-slate-500"
+      bg-slate-500 "
       >
-        <p className="">
-          Life points:☕
+        <div className="">
+          Life ❤️ points:
           <AnimatedCounter
             value={lifePoints.toFixed(0)}
             color="white"
             fontSize="40px"
             decimalPrecision={0}
           />
-        </p>
+        </div>
       </div>
       {modalOpen == "main" && (
         <SnackbarProvider
@@ -149,7 +166,7 @@ function App() {
       <dialog
         id="answerModal"
         ref={modalRef}
-        className="p-24 border bg-[#121212] rounded-2xl "
+        className="p-24 border bg-[#121212] rounded-2xl max-w-xl"
       >
         {modalOpen == "answer" && (
           <SnackbarProvider
@@ -159,16 +176,18 @@ function App() {
             }}
           />
         )}
-        <h1 className="text-[#b3b3b3] text-center text-xl">
-          {/* esto me lo manda gustavo: */}
-          {currentQuestion}
-        </h1>
+        <h1
+          className="text-[#b3b3b3] text-center text-2xl   justify-center flex-wrap"
+          dangerouslySetInnerHTML={{ __html: currentQuestion }}
+        ></h1>
 
         <div className="grid ">
           <input
             placeholder="Enter your answer"
             className="flex m-auto mt-4 rounded-md p-1.5 w-64  "
             type="text"
+            maxLength={25}
+            style={{ textTransform: "uppercase" }}
             value={answerValue}
             onChange={(e) => {
               setAnswerValue(e.target.value);
@@ -190,23 +209,25 @@ function App() {
           )}
         </div>
         <br />
-        <button
-          id="closeModal"
-          onClick={() => {
-            modalRef.current?.close();
-            setModalOpen(main);
-          }}
-          className="bg-[#b3b3b3] p-3 m-4 rounded hover:bg-[#535353]"
-        >
-          Close modal
-        </button>
-        <button
-          id="sendAnswer"
-          onClick={() => handleSendAnswer()}
-          className="bg-[#b3b3b3] p-3 m-4 rounded hover:bg-[#535353]"
-        >
-          Send Answer
-        </button>
+        <div className=" flex  justify-center ">
+          <a
+            id="closeModal"
+            onClick={() => {
+              modalRef.current?.close();
+              setModalOpen("main");
+            }}
+            className=" m-auto cursor-pointer"
+          >
+            Close modal
+          </a>
+          <button
+            id="sendAnswer"
+            onClick={() => handleSendAnswer()}
+            className="bg-[#b3b3b3] p-3 m-4 rounded hover:bg-[#535353]"
+          >
+            Send Answer
+          </button>
+        </div>
       </dialog>
 
       {/* Login modal */}
@@ -272,23 +293,35 @@ function App() {
 
       <div
         id="page"
-        className="absolute  min-h-screen w-2/4 bg-[#121212] p-6 text-center transform -translate-x-1/2  border  left-1/2 border-slate-400 top-32 pb-24 px-16"
+        className="absolute  min-h-screen w-2/4 bg-[#121212] p-6 text-center transform -translate-x-1/2  border  left-1/2 border-slate-400 top-4 pb-24 px-16 "
       >
-        <div id="" className="p-4">
+        {/*  <div id="" className="p-4">
           <p>Capitulo 1</p>
-        </div>
+        </div> */}
         {loaded &&
-          post.map((element) => {
-            return (
-              <>
-                <TypewriterEffect
-                  handleContinueClick={handleContinueClick}
-                  words={element}
-                  isFast={true}
+          textContent.map((element, index) => {
+            if (textContent.length > index + 1) {
+              return (
+                <div
                   key={element}
-                />
-              </>
-            );
+                  dangerouslySetInnerHTML={{ __html: element }}
+                  className="text-left"
+                ></div>
+              );
+            } else {
+              return (
+                <div key={element}>
+                  <TypewriterEffect
+                    handleContinueClick={handleContinueClick}
+                    words={element}
+                    isFast={true}
+                    key={element}
+                    setIsTyping={setIsTyping}
+                    isTyping={isTyping}
+                  />
+                </div>
+              );
+            }
           })}
         {showCursorState && (
           <p className="text-left">
@@ -297,7 +330,12 @@ function App() {
         )}
 
         {showCursorState && (
-          <a className="cursor-pointer" onClick={handleContinueClick}>
+          <a
+            id="continueButton"
+            ref={messagesEndRef}
+            className="cursor-pointer"
+            onClick={handleContinueClick}
+          >
             Click here to continue
           </a>
         )}
