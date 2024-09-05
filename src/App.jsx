@@ -5,8 +5,10 @@ import { ThreeDots } from "react-loader-spinner";
 import TypewriterEffect from "./components/TypewriterEffect";
 import { Cursor } from "react-simple-typewriter";
 import { AnimatedCounter } from "react-animated-counter";
+import { AES, enc, MD5 } from "crypto-js";
 
-const baseURL = "http://localhost:27017";
+const baseURL =
+  "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
 function App() {
   const [loginValue, setLoginValue] = useState("");
@@ -16,6 +18,7 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
 
   const [currentQuestion, setCurrentQuestion] = useState("from state");
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const [modalOpen, setModalOpen] = useState("login");
   const [loadingSpinner, setLoadingSpinner] = useState(false);
@@ -58,43 +61,64 @@ function App() {
     setModalOpen("login");
   }, []);
 
+  function handleMyError(message, lifePoints) {
+    setLoadingSpinner(false);
+    enqueueSnackbar(message, {
+      variant: "error",
+    });
+
+    if (lifePoints == -1) {
+    } else {
+      setLifePoints(lifePoints);
+    }
+  }
   // POST LOGIN
   function handleSendLogin() {
     const userAgent = navigator.userAgent.toLowerCase();
     const userPerficientMail = loginValue.toLowerCase();
 
+    const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
+
     let loginObjectToSendPost = {
       index: 0,
-      hash: userPerficientMail.trim() + userAgent.trim(),
+      hash: cipherText.toString() /* userPerficientMail.trim() + userAgent.trim() */,
       perficientEmail: userPerficientMail.trim(),
     };
-
+    console.log("loginObjectToSendPost", loginObjectToSendPost);
     if (!userPerficientMail.includes("@perficient.com")) {
       enqueueSnackbar("Please enter a valid perficient email", {
         variant: "error",
       });
     } else {
       const fetchingLoginData = () => {
-        try {
-          setLoadingSpinner(true);
-          axios
-            .post("http://localhost:27017/login", loginObjectToSendPost)
+        setLoadingSpinner(true);
+        axios
+          .post(baseURL + "login", loginObjectToSendPost, { timeout: 15000 })
 
-            .then((response) => {
-              setModalOpen("main");
-              setLifePoints(2000);
-              response.data.story.forEach((element) => {
-                setTextContent((prevText) => [...prevText, element]);
-              });
-
-              setCurrentQuestion(response.data.currentQuestion);
-              setShowCursorState(true);
-              setLoadingSpinner(false);
-              setLoaded(true);
-
-              loginModalRef.current?.close();
+          .then((response) => {
+            console.log("response python", response.data);
+            setModalOpen("main");
+            setLifePoints(response.data.score);
+            setCurrentIndex(response.data.id);
+            response.data.story.forEach((element) => {
+              setTextContent((prevText) => [...prevText, element]);
             });
-        } catch {}
+
+            setCurrentQuestion(response.data.currentQuestion);
+            setShowCursorState(true);
+            setLoadingSpinner(false);
+            setLoaded(true);
+
+            loginModalRef.current?.close();
+          })
+          .catch((error) => {
+            if (error.code === "ECONNABORTED") {
+              handleMyError("Request timed out", -1);
+            } else {
+              handleMyError(error.message, -1);
+              console.log(error.message);
+            }
+          });
       };
 
       fetchingLoginData();
@@ -106,35 +130,52 @@ function App() {
     const userAgent = navigator.userAgent.toLowerCase();
     const userPerficientMail = loginValue.toLowerCase();
 
+    const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
+    console.log("current index", currentIndex);
     let answerObjectToPost = {
-      id: 1,
+      id: currentIndex,
 
       perficientEmail: userPerficientMail,
-      hash: userPerficientMail.trim() + userAgent.trim(),
-      answer: answerValue.toLowerCase().trim(),
+      hash: cipherText.toString(),
+      answer: answerValue.toUpperCase().trim(),
     };
+
+    console.log("new object to answer", answerObjectToPost);
+
     setModalOpen("answer");
     const fetchAnswerData = async () => {
       setLoadingSpinner(true);
-      axios.post(baseURL + "/answer", answerObjectToPost).then((response) => {
-        if (response.status == 200) {
-          /* setLoadingSpinner(false); */
-          //si devuelve 400 sigue el modal, salga un texto rojo que diga que esta mal
-          modalRef.current?.close();
+      axios
+        .post(baseURL + "answer", answerObjectToPost, { timeout: 15000 })
+        .then((response) => {
+          if (response.status == 200) {
+            /* setLoadingSpinner(false); */
+            //si devuelve 400 sigue el modal, salga un texto rojo que diga que esta mal
+            console.log("response del answer", response.data);
+            modalRef.current?.close();
 
-          setTextContent((oldArray) => [...oldArray, response.data.newText]);
-          setCurrentQuestion(response.data.newQuestion);
-          setAnswerValue("");
-          setLoadingSpinner(false);
-        } else {
-          setLoadingSpinner(false);
-          enqueueSnackbar("Thats not the right answer", {
-            variant: "error",
-          });
+            setTextContent((oldArray) => [...oldArray, response.data.newText]);
+            setCurrentQuestion(response.data.newQuestion);
+            setAnswerValue("");
+            setLoadingSpinner(false);
+            setCurrentIndex(response.data.newIndex);
+          } else {
+            setLoadingSpinner(false);
+            enqueueSnackbar("Thats not the right answer", {
+              variant: "error",
+            });
 
-          setLifePoints((currentLifepoints) => currentLifepoints - 10);
-        }
-      });
+            setLifePoints(error.response.data.score);
+          }
+        })
+        .catch((error) => {
+          if (error.response.status == 401) {
+            handleMyError(
+              "Thats not the right answer",
+              error.response.data.score
+            );
+          }
+        });
     };
 
     fetchAnswerData();
