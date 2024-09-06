@@ -6,7 +6,7 @@ import TypewriterEffect from "./components/TypewriterEffect";
 import { Cursor } from "react-simple-typewriter";
 import { AnimatedCounter } from "react-animated-counter";
 import { AES, enc, MD5 } from "crypto-js";
-
+import LoginDialogue from "./components/LoginDialogue";
 const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
@@ -15,29 +15,30 @@ function App() {
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
 
+  const [tooMuchQuestion, setTooMuchQuestion] = useState(false);
+
   const [isTyping, setIsTyping] = useState(false);
 
-  const [currentQuestion, setCurrentQuestion] = useState("from state");
+  const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const [modalOpen, setModalOpen] = useState("login");
   const [loadingSpinner, setLoadingSpinner] = useState(false);
-
-  const modalRef = useRef();
-  const loginModalRef = useRef();
-
   const [textContent, setTextContent] = useState([]);
 
   const [loaded, setLoaded] = useState(false);
   const [showCursorState, setShowCursorState] = useState(false);
+  const modalRef = useRef();
+  const loginModalRef = useRef();
+  const scrollInto = useRef();
+
+  const validEmail = new RegExp(
+    "^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$"
+  );
 
   function handleContinueClick() {
     modalRef.current?.showModal();
   }
-  const messagesEndRef = useRef(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
 
   React.useEffect(() => {
     //ingresamos con direccion de correo
@@ -60,6 +61,14 @@ function App() {
     loginModalRef.current?.showModal();
     setModalOpen("login");
   }, []);
+
+  useEffect(() => {
+    if (isTyping) {
+      if (scrollInto !== null) {
+        scrollInto.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  });
 
   function handleMyError(message, lifePoints) {
     setLoadingSpinner(false);
@@ -85,7 +94,13 @@ function App() {
       perficientEmail: userPerficientMail.trim(),
     };
     console.log("loginObjectToSendPost", loginObjectToSendPost);
-    if (!userPerficientMail.includes("@perficient.com")) {
+
+    //regex email
+    if (!validEmail.test(userPerficientMail)) {
+      enqueueSnackbar("Please enter a valid email", {
+        variant: "error",
+      });
+    } else if (!userPerficientMail.includes("@perficient.com")) {
       enqueueSnackbar("Please enter a valid perficient email", {
         variant: "error",
       });
@@ -112,7 +127,10 @@ function App() {
             loginModalRef.current?.close();
           })
           .catch((error) => {
-            if (error.code === "ECONNABORTED") {
+            console.log(error);
+            if (error.response.status == 500) {
+              handleMyError("Request failed, please try again in a while", -1);
+            } else if (error.code === "ECONNABORTED") {
               handleMyError("Request timed out", -1);
             } else {
               handleMyError(error.message, -1);
@@ -140,14 +158,13 @@ function App() {
       answer: answerValue.toUpperCase().trim(),
     };
 
-    console.log("new object to answer", answerObjectToPost);
-
     setModalOpen("answer");
     const fetchAnswerData = async () => {
       setLoadingSpinner(true);
       axios
         .post(baseURL + "answer", answerObjectToPost, { timeout: 15000 })
         .then((response) => {
+          console.log("response", response);
           if (response.status == 200) {
             /* setLoadingSpinner(false); */
             //si devuelve 400 sigue el modal, salga un texto rojo que diga que esta mal
@@ -159,6 +176,14 @@ function App() {
             setAnswerValue("");
             setLoadingSpinner(false);
             setCurrentIndex(response.data.newIndex);
+          } else if (response.status == 206) {
+            console.log("response del answer", response.data);
+            response.data.newQuestion.length > 150
+              ? setTooMuchQuestion(true)
+              : setTooMuchQuestion(false);
+            setCurrentQuestion(response.data.newQuestion);
+            setAnswerValue("");
+            setLoadingSpinner(false);
           } else {
             setLoadingSpinner(false);
             enqueueSnackbar("Thats not the right answer", {
@@ -169,7 +194,8 @@ function App() {
           }
         })
         .catch((error) => {
-          if (error.response.status == 401) {
+          console.log("error ->", error);
+          if (error.response.status == 417) {
             handleMyError(
               "Thats not the right answer",
               error.response.data.score
@@ -187,7 +213,7 @@ function App() {
       bg-slate-500 "
       >
         <div className="">
-          Life ❤️ points:
+          Attempts:
           <AnimatedCounter
             value={lifePoints.toFixed(0)}
             color="white"
@@ -218,7 +244,8 @@ function App() {
           />
         )}
         <h1
-          className="text-[#b3b3b3] text-center text-2xl   justify-center flex-wrap"
+          className={`text-[#b3b3b3] text-center justify-center flex-wrap
+            ${tooMuchQuestion ? " text-sm " : " text-2xl "}`}
           dangerouslySetInnerHTML={{ __html: currentQuestion }}
         ></h1>
 
@@ -250,21 +277,21 @@ function App() {
           )}
         </div>
         <br />
-        <div className=" flex  justify-center ">
+        <div className=" flex  justify-between 	">
           <a
             id="closeModal"
             onClick={() => {
               modalRef.current?.close();
               setModalOpen("main");
             }}
-            className=" m-auto cursor-pointer"
+            className="cursor-pointer grow-0 flex items-center p-3 "
           >
-            Close modal
+            Close
           </a>
           <button
             id="sendAnswer"
             onClick={() => handleSendAnswer()}
-            className="bg-[#b3b3b3] p-3 m-4 rounded hover:bg-[#535353]"
+            className="bg-[#b3b3b3] p-3 m-4 rounded hover:bg-[#535353] grow-0"
           >
             Send Answer
           </button>
@@ -272,66 +299,15 @@ function App() {
       </dialog>
 
       {/* Login modal */}
-
-      <dialog
-        id="loginModal"
+      <LoginDialogue
+        handleSendLogin={handleSendLogin}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
         ref={loginModalRef}
-        className="z-10 p-24 border bg-[#121212] rounded-2xl "
-        onClose={(e) => {}}
-        onKeyDown={(e) => {
-          if (e.nativeEvent.key == "Escape") {
-            e.preventDefault();
-            loginModalRef.current?.showModal();
-            setModalOpen(login);
-          }
-        }}
-      >
-        {/* toast si perficient mail esta mal */}
-        {modalOpen == "login" && (
-          <SnackbarProvider
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-          />
-        )}
-        <h1 className="text-[#b3b3b3] text-center text-xl">Login:</h1>
-        <input
-          placeholder="Enter your perficient email... "
-          className="flex m-auto mt-4 rounded-md p-1.5 w-64  "
-          type="text"
-          value={loginValue}
-          onChange={(e) => {
-            setLoginValue(e.target.value);
-          }}
-        />
-        <br />
-        <div className="  grid ">
-          {loadingSpinner && (
-            <div className="m-auto pb-4">
-              <ThreeDots
-                visible={true}
-                height="40"
-                width="40"
-                color="#4fa94d"
-                radius="9"
-                ariaLabel="three-dots-loading"
-                wrapperStyle={{}}
-                wrapperClass=""
-              />
-            </div>
-          )}
-
-          <button
-            id="login"
-            onClick={() => handleSendLogin()}
-            className="bg-[#b3b3b3] p-3 rounded hover:bg-[#535353]"
-          >
-            Login
-          </button>
-        </div>
-      </dialog>
-
+        loginValue={loginValue}
+        setLoginValue={setLoginValue}
+        loadingSpinner={loadingSpinner}
+      />
       <div
         id="page"
         className="absolute  min-h-screen w-2/4 bg-[#121212] p-6 text-center transform -translate-x-1/2  border  left-1/2 border-slate-400 top-4 pb-24 px-16 "
@@ -351,16 +327,18 @@ function App() {
               );
             } else {
               return (
-                <div key={element}>
-                  <TypewriterEffect
-                    handleContinueClick={handleContinueClick}
-                    words={element}
-                    isFast={true}
-                    key={element}
-                    setIsTyping={setIsTyping}
-                    isTyping={isTyping}
-                  />
-                </div>
+                <>
+                  <div key={element}>
+                    <TypewriterEffect
+                      handleContinueClick={handleContinueClick}
+                      words={element}
+                      isFast={true}
+                      key={element}
+                      setIsTyping={setIsTyping}
+                      isTyping={isTyping}
+                    />
+                  </div>
+                </>
               );
             }
           })}
@@ -371,15 +349,20 @@ function App() {
         )}
 
         {showCursorState && (
-          <a
-            id="continueButton"
-            ref={messagesEndRef}
-            className="cursor-pointer"
-            onClick={handleContinueClick}
-          >
-            Click here to continue
-          </a>
+          <>
+            <a
+              id="continueButton"
+              className="cursor-pointer"
+              onClick={handleContinueClick}
+            >
+              Click here to continue
+            </a>
+          </>
         )}
+        <div className="min-h-64">
+          <br />
+        </div>
+        <div id="toScrollTo" ref={scrollInto}></div>
       </div>
     </>
   );
