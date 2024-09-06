@@ -257,8 +257,8 @@ function App() {
             placeholder="Enter your answer"
             className="flex m-auto mt-4 rounded-md p-1.5 w-64  "
             type="text"
-            maxLength={25}
-            style={{ textTransform: "uppercase" }}
+            maxLength={60}
+            style={{ textTransform: "uppercase", fontSize: "0.8em" }}
             value={answerValue}
             onChange={(e) => {
               setAnswerValue(e.target.value);

@@ -37,7 +37,7 @@ const LoginDialogue = forwardRef(
             }}
           />
         )}
-        <h1 className="text-[#b3b3b3] text-center text-xl">Login:</h1>
+        <h1 className="text-[#b3b3b3] text-center text-xl">Username:</h1>
         <input
           placeholder="Enter your perficient email... "
           className="flex m-auto mt-4 rounded-md p-1.5 w-64"
@@ -66,6 +66,7 @@ const LoginDialogue = forwardRef(
 
           <button
             id="login"
+            name="login"
             tabIndex={0}
             onClick={handleSendLogin}
             className="bg-[#b3b3b3] p-3 rounded hover:bg-[#535353]"
