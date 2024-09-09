@@ -7,7 +7,7 @@ import { Cursor } from "react-simple-typewriter";
 import { AnimatedCounter } from "react-animated-counter";
 import { AES, enc, MD5 } from "crypto-js";
 import LoginDialogue from "./components/LoginDialogue";
-import ReactAudioPlayer from "react-audio-player";
+import CustomAudioPlayer from "./components/CustomAudioPlayer";
 import Divider from "@mui/material/Divider";
 
 const baseURL =
@@ -242,14 +242,13 @@ function App() {
             decimalPrecision={0}
             incrementColor="red"
           />
-          <Divider style={{ backgroundColor: "#ffffff", margin: "4px" }} />
-          <div className="py-3">
-            <ReactAudioPlayer
-              src={currentAudio}
-              controls
-              className="max-w-64 2xl:max-w-80"
-            />
-          </div>
+          <CustomAudioPlayer 
+            src={currentAudio}
+            isVisible={true}
+            autoPlay={true}
+            onPlay={() => console.log('Audio started playing')}
+            onPause={() => console.log('Audio paused')}
+          />
         </div>
       </div>
       {modalOpen == "main" && (
