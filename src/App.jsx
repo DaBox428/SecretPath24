@@ -63,11 +63,14 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (isTyping) {
+    console.log("useEffect")
+    // if (isTyping) {
+      console.log("isTyping")
       if (scrollInto !== null) {
+        console.log("scrollInto")
         scrollInto.current.scrollIntoView({ behavior: "smooth" });
       }
-    }
+    // }
   });
 
   function handleMyError(message, lifePoints) {
@@ -254,8 +257,8 @@ function App() {
             placeholder="Enter your answer"
             className="flex m-auto mt-4 rounded-md p-1.5 w-64  "
             type="text"
-            maxLength={25}
-            style={{ textTransform: "uppercase" }}
+            maxLength={60}
+            style={{ textTransform: "uppercase", fontSize: "0.8em" }}
             value={answerValue}
             onChange={(e) => {
               setAnswerValue(e.target.value);
@@ -309,8 +312,19 @@ function App() {
         loadingSpinner={loadingSpinner}
       />
       <div
-        id="page"
-        className="absolute  min-h-screen w-2/4 bg-[#121212] p-6 text-center transform -translate-x-1/2  border  left-1/2 border-slate-400 top-4 pb-24 px-16 "
+        id="page"   style={{ 
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          minWidth: '800px',
+          maxWidth: '1200px',
+          minHeight: '100vh',
+          backgroundColor: '#121212',
+          padding: '2rem 4rem 6rem',
+          textAlign: 'center',
+          borderLeft: '1px solid #64748b'
+        }}
       >
         {/*  <div id="" className="p-4">
           <p>Capitulo 1</p>

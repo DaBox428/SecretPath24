@@ -18,6 +18,7 @@ const LoginDialogue = forwardRef(
         id="loginModal"
         ref={loginModalRef}
         className="z-10 p-24 border bg-[#121212] rounded-2xl "
+        style={{ textTransform: "lowercase", overflowX: "hidden"}}
         onClose={(e) => {}}
         onKeyDown={(e) => {
           if (e.nativeEvent.key == "Escape") {
@@ -36,11 +37,11 @@ const LoginDialogue = forwardRef(
             }}
           />
         )}
-        <h1 className="text-[#b3b3b3] text-center text-xl">Login:</h1>
+        <h1 className="text-[#b3b3b3] text-center text-xl">Username:</h1>
         <input
           placeholder="Enter your perficient email... "
-          className="flex m-auto mt-4 rounded-md p-1.5 w-64  "
-          type="text"
+          className="flex m-auto mt-4 rounded-md p-1.5 w-64"
+          type="email"
           value={loginValue}
           onChange={(e) => {
             setLoginValue(e.target.value);
@@ -65,6 +66,8 @@ const LoginDialogue = forwardRef(
 
           <button
             id="login"
+            name="login"
+            tabIndex={0}
             onClick={handleSendLogin}
             className="bg-[#b3b3b3] p-3 rounded hover:bg-[#535353]"
           >
