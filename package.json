@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.0.2",
     "axios": "^1.7.3",
     "crypto-js": "^4.2.0",
     "notistack": "^3.0.1",
     "react": "^18.3.1",
     "react-animated-counter": "^1.7.9",
+    "react-audio-player": "^0.17.0",
     "react-dom": "^18.3.1",
     "react-loader-spinner": "^6.1.6",
     "react-scroll": "^1.9.0",

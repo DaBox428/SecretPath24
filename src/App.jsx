@@ -7,6 +7,9 @@ import { Cursor } from "react-simple-typewriter";
 import { AnimatedCounter } from "react-animated-counter";
 import { AES, enc, MD5 } from "crypto-js";
 import LoginDialogue from "./components/LoginDialogue";
+import ReactAudioPlayer from "react-audio-player";
+import Divider from "@mui/material/Divider";
+
 const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
@@ -26,6 +29,7 @@ function App() {
   const [loadingSpinner, setLoadingSpinner] = useState(false);
   const [textContent, setTextContent] = useState([]);
 
+  const [currentAudio, setCurrentAudio] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [showCursorState, setShowCursorState] = useState(false);
   const modalRef = useRef();
@@ -63,13 +67,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect")
+    console.log("useEffect");
     // if (isTyping) {
-      console.log("isTyping")
-      if (scrollInto !== null) {
-        console.log("scrollInto")
-        scrollInto.current.scrollIntoView({ behavior: "smooth" });
-      }
+    console.log("isTyping");
+    if (scrollInto !== null) {
+      console.log("scrollInto");
+      scrollInto.current.scrollIntoView({ behavior: "smooth" });
+    }
     // }
   });
 
@@ -115,6 +119,8 @@ function App() {
 
           .then((response) => {
             console.log("response python", response.data);
+
+            setCurrentAudio(response.data.audio);
             setModalOpen("main");
             setLifePoints(response.data.score);
             setCurrentIndex(response.data.id);
@@ -171,9 +177,14 @@ function App() {
           if (response.status == 200) {
             /* setLoadingSpinner(false); */
             //si devuelve 400 sigue el modal, salga un texto rojo que diga que esta mal
-            console.log("response del answer", response.data);
+            console.log(
+              "response del answer",
+              response.data,
+              "eeea: ",
+              response.data.newAudio
+            );
             modalRef.current?.close();
-
+            setCurrentAudio(response.data.newAudio);
             setTextContent((oldArray) => [...oldArray, response.data.newText]);
             setCurrentQuestion(response.data.newQuestion);
             setAnswerValue("");
@@ -212,17 +223,33 @@ function App() {
   return (
     <>
       <div
-        className="text-slate-300 fixed m-24 p-5 z-20 right-5 rounded-3xl px-8
+        className="text-slate-300 fixed m-2 p-5 z-20 right-5 rounded-3xl px-8 my-24
       bg-slate-500 "
       >
-        <div className="">
+        <div className="text-center text-white ">
           Attempts:
           <AnimatedCounter
+            containerStyles={{
+              flex: true,
+              flexDirection: "row",
+              flexGrow: 2,
+
+              paddingBottom: "8px",
+            }}
             value={lifePoints.toFixed(0)}
             color="white"
             fontSize="40px"
             decimalPrecision={0}
+            incrementColor="red"
           />
+          <Divider style={{ backgroundColor: "#ffffff", margin: "4px" }} />
+          <div className="py-3">
+            <ReactAudioPlayer
+              src={currentAudio}
+              controls
+              className="max-w-64 2xl:max-w-80"
+            />
+          </div>
         </div>
       </div>
       {modalOpen == "main" && (
@@ -242,7 +269,7 @@ function App() {
           <SnackbarProvider
             anchorOrigin={{
               vertical: "top",
-              horizontal: "center",
+              horizontal: "right",
             }}
           />
         )}
@@ -312,19 +339,8 @@ function App() {
         loadingSpinner={loadingSpinner}
       />
       <div
-        id="page"   style={{ 
-          position: 'absolute',
-          top: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          minWidth: '800px',
-          maxWidth: '1200px',
-          minHeight: '100vh',
-          backgroundColor: '#121212',
-          padding: '2rem 4rem 6rem',
-          textAlign: 'center',
-          borderLeft: '1px solid #64748b'
-        }}
+        id="page"
+        className="absolute top-0 left-1/2 bg-[#121212] transform -translate-x-2/3 2xl:-translate-x-1/2  min-w-[800px] max-w-[1500px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
       >
         {/*  <div id="" className="p-4">
           <p>Capitulo 1</p>
@@ -333,11 +349,20 @@ function App() {
           textContent.map((element, index) => {
             if (textContent.length > index + 1) {
               return (
-                <div
-                  key={element}
-                  dangerouslySetInnerHTML={{ __html: element }}
-                  className="text-left"
-                ></div>
+                <div>
+                  <div
+                    key={element}
+                    dangerouslySetInnerHTML={{ __html: element }}
+                    className="text-left"
+                  ></div>
+                  <Divider
+                    style={{
+                      backgroundColor: "#ffffff",
+                      margin: "4px",
+                      marginBottom: "20px",
+                    }}
+                  />
+                </div>
               );
             } else {
               return (
