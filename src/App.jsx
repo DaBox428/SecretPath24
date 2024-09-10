@@ -30,6 +30,7 @@ function App() {
   const [loadingSpinner, setLoadingSpinner] = useState(false);
   const [textContent, setTextContent] = useState([]);
 
+  const [autoPlay, setAutoPlay] = useState(false);
   const [currentAudio, setCurrentAudio] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [showCursorState, setShowCursorState] = useState(false);
@@ -246,9 +247,9 @@ function App() {
           <CustomAudioPlayer 
             src={currentAudio}
             isVisible={true}
-            autoPlay={true}
-            onPlay={() => console.log('Audio started playing')}
-            onPause={() => console.log('Audio paused')}
+            autoPlay={autoPlay}
+            onPlay={() => setAutoPlay(true)}
+            onPause={() => setAutoPlay(false)}
           />
         </div>
       </div>
