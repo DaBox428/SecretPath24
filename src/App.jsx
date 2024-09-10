@@ -21,6 +21,7 @@ function App() {
   const [tooMuchQuestion, setTooMuchQuestion] = useState(false);
 
   const [isTyping, setIsTyping] = useState(false);
+  const [showNextQuestion, setShowNextQuestion] = useState(true);
 
   const [currentQuestion, setCurrentQuestion] = useState("");
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -39,6 +40,8 @@ function App() {
   const validEmail = new RegExp(
     "^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$"
   );
+
+  // let showNextQuestion = false;
 
   function handleContinueClick() {
     modalRef.current?.showModal();
@@ -67,11 +70,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("useEffect");
     // if (isTyping) {
-    console.log("isTyping");
     if (scrollInto !== null) {
-      console.log("scrollInto");
       scrollInto.current.scrollIntoView({ behavior: "smooth" });
     }
     // }
@@ -129,9 +129,13 @@ function App() {
             });
 
             setCurrentQuestion(response.data.currentQuestion);
+            if ( ! response.data.currentQuestion ) {
+              setShowNextQuestion(false);
+            }
             setShowCursorState(true);
             setLoadingSpinner(false);
             setLoaded(true);
+
 
             loginModalRef.current?.close();
           })
@@ -177,16 +181,13 @@ function App() {
           if (response.status == 200) {
             /* setLoadingSpinner(false); */
             //si devuelve 400 sigue el modal, salga un texto rojo que diga que esta mal
-            console.log(
-              "response del answer",
-              response.data,
-              "eeea: ",
-              response.data.newAudio
-            );
             modalRef.current?.close();
             setCurrentAudio(response.data.newAudio);
             setTextContent((oldArray) => [...oldArray, response.data.newText]);
             setCurrentQuestion(response.data.newQuestion);
+            if ( ! response.data.newQuestion ) {
+              setShowNextQuestion(false);
+            }
             setAnswerValue("");
             setLoadingSpinner(false);
             setCurrentIndex(response.data.newIndex);
@@ -386,7 +387,7 @@ function App() {
           </p>
         )}
 
-        {showCursorState && (
+        {showCursorState && showNextQuestion && (
           <>
             <a
               id="continueButton"
