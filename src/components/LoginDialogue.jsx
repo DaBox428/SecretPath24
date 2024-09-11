@@ -17,8 +17,8 @@ const LoginDialogue = forwardRef(
       <dialog
         id="loginModal"
         ref={loginModalRef}
-        className="z-10 p-24 border bg-[#121212] rounded-2xl "
-        style={{ textTransform: "lowercase", overflowX: "hidden"}}
+        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm"
+        style={{ textTransform: "lowercase", overflowX: "hidden" }}
         onClose={(e) => {}}
         onKeyDown={(e) => {
           if (e.nativeEvent.key == "Escape") {
@@ -71,7 +71,7 @@ const LoginDialogue = forwardRef(
             onClick={handleSendLogin}
             className="bg-[#b3b3b3] p-3 rounded hover:bg-[#535353]"
           >
-            Login
+            Log In
           </button>
         </div>
       </dialog>

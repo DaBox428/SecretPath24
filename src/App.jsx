@@ -8,7 +8,6 @@ import { AnimatedCounter } from "react-animated-counter";
 import { AES, enc, MD5 } from "crypto-js";
 import LoginDialogue from "./components/LoginDialogue";
 import CustomAudioPlayer from "./components/CustomAudioPlayer";
-import Divider from "@mui/material/Divider";
 
 const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
@@ -42,8 +41,6 @@ function App() {
     "^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$"
   );
 
-  // let showNextQuestion = false;
-
   function handleContinueClick() {
     modalRef.current?.showModal();
   }
@@ -72,11 +69,12 @@ function App() {
 
   useEffect(() => {
     // if (isTyping) {
+    console.log("scrollInto", isTyping);
     if (scrollInto !== null) {
       scrollInto.current.scrollIntoView({ behavior: "smooth" });
     }
     // }
-  });
+  }, [isTyping]);
 
   function handleMyError(message, lifePoints) {
     setLoadingSpinner(false);
@@ -120,7 +118,16 @@ function App() {
 
           .then((response) => {
             console.log("response python", response.data);
+            let currentQuestion = response.data.currentQuestion;
 
+            if (currentQuestion.toLowerCase().includes("deja tu feedback")) {
+              console.log("current question from login => ", currentQuestion);
+              setShowNextQuestion(false);
+              setShowCursorState(false);
+            } else {
+              setShowNextQuestion(true);
+              setShowCursorState(true);
+            }
             setCurrentAudio(response.data.audio);
             setModalOpen("main");
             setLifePoints(response.data.score);
@@ -128,24 +135,18 @@ function App() {
             response.data.story.forEach((element) => {
               setTextContent((prevText) => [...prevText, element]);
             });
-
             setCurrentQuestion(response.data.currentQuestion);
-            if ( ! response.data.currentQuestion ) {
-              setShowNextQuestion(false);
-            }
-            setShowCursorState(true);
             setLoadingSpinner(false);
             setLoaded(true);
-
 
             loginModalRef.current?.close();
           })
           .catch((error) => {
             console.log(error);
-            if (error.response.status == 500) {
-              handleMyError("Request failed, please try again in a while", -1);
-            } else if (error.code === "ECONNABORTED") {
+            if (error.code === "ECONNABORTED") {
               handleMyError("Request timed out", -1);
+            } else if (error.response.status == 500) {
+              handleMyError("Request failed, please try again in a while", -1);
             } else {
               handleMyError(error.message, -1);
               console.log(error.message);
@@ -186,7 +187,8 @@ function App() {
             setCurrentAudio(response.data.newAudio);
             setTextContent((oldArray) => [...oldArray, response.data.newText]);
             setCurrentQuestion(response.data.newQuestion);
-            if ( ! response.data.newQuestion ) {
+            console.log("newquestion", !response.data.newQuestion);
+            if (!response.data.newQuestion) {
               setShowNextQuestion(false);
             }
             setAnswerValue("");
@@ -211,11 +213,15 @@ function App() {
         })
         .catch((error) => {
           console.log("error ->", error);
-          if (error.response.status == 417) {
-            handleMyError(
-              "Thats not the right answer",
-              error.response.data.score
-            );
+          if (error.response.status) {
+            if (error.response.status == 417) {
+              handleMyError(
+                "Thats not the right answer",
+                error.response.data.score
+              );
+            }
+          } else {
+            handleMyError(error, -1);
           }
         });
     };
@@ -244,7 +250,7 @@ function App() {
             decimalPrecision={0}
             incrementColor="red"
           />
-          <CustomAudioPlayer 
+          <CustomAudioPlayer
             src={currentAudio}
             isVisible={true}
             autoPlay={autoPlay}
@@ -264,7 +270,7 @@ function App() {
       <dialog
         id="answerModal"
         ref={modalRef}
-        className="p-24 border bg-[#121212] rounded-2xl max-w-xl"
+        className="p-24 border bg-[#121212] rounded-2xl max-w-xl backdrop:bg-black/10 backdrop:backdrop-blur-[2px]"
       >
         {modalOpen == "answer" && (
           <SnackbarProvider
@@ -356,13 +362,6 @@ function App() {
                     dangerouslySetInnerHTML={{ __html: element }}
                     className="text-left"
                   ></div>
-                  <Divider
-                    style={{
-                      backgroundColor: "#ffffff",
-                      margin: "4px",
-                      marginBottom: "20px",
-                    }}
-                  />
                 </div>
               );
             } else {
