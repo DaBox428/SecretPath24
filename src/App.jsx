@@ -67,14 +67,9 @@ function App() {
     setModalOpen("login");
   }, []);
 
-  useEffect(() => {
-    // if (isTyping) {
-    console.log("scrollInto", isTyping);
-    if (scrollInto !== null) {
-      scrollInto.current.scrollIntoView({ behavior: "smooth" });
-    }
-    // }
-  }, [isTyping]);
+  const scrollIntoView = () => {
+    scrollInto.current.scrollIntoView({ behavior: "smooth" });
+  };
 
   function handleMyError(message, lifePoints) {
     setLoadingSpinner(false);
@@ -140,6 +135,11 @@ function App() {
             setLoaded(true);
 
             loginModalRef.current?.close();
+
+            setTimeout(() => {
+              console.log("scroll into");
+              scrollIntoView();
+            }, "400");
           })
           .catch((error) => {
             console.log(error);
@@ -187,6 +187,7 @@ function App() {
             setCurrentAudio(response.data.newAudio);
             setTextContent((oldArray) => [...oldArray, response.data.newText]);
             setCurrentQuestion(response.data.newQuestion);
+
             console.log("newquestion", !response.data.newQuestion);
             if (!response.data.newQuestion) {
               setShowNextQuestion(false);
@@ -194,6 +195,10 @@ function App() {
             setAnswerValue("");
             setLoadingSpinner(false);
             setCurrentIndex(response.data.newIndex);
+            setTimeout(() => {
+              console.log("scroll into asnwer");
+              scrollIntoView();
+            }, "400");
           } else if (response.status == 206) {
             console.log("response del answer", response.data);
             response.data.newQuestion.length > 150
@@ -345,18 +350,15 @@ function App() {
         setLoginValue={setLoginValue}
         loadingSpinner={loadingSpinner}
       />
-      <div
-        id="page"
-        className="absolute top-0 left-1/2 bg-[#121212] transform -translate-x-2/3 2xl:-translate-x-1/2  min-w-[800px] max-w-[1500px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
-      >
-        {/*  <div id="" className="p-4">
-          <p>Capitulo 1</p>
-        </div> */}
+      <div className="absolute ml-56 mr-56">
         {loaded &&
           textContent.map((element, index) => {
             if (textContent.length > index + 1) {
               return (
-                <div>
+                <div
+                  id="page"
+                  className=" mb-10 top-0 left-1/2 bg-[#121212]  min-w-[800px] max-w-[1500px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
+                >
                   <div
                     key={element}
                     dangerouslySetInnerHTML={{ __html: element }}
@@ -367,7 +369,12 @@ function App() {
             } else {
               return (
                 <>
-                  <div key={element}>
+                  <div id="toScrollTo" ref={scrollInto}></div>
+                  <div
+                    key={element}
+                    id="page"
+                    className=" top-0 left-1/2 bg-[#121212]  min-w-[800px] max-w-[1500px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
+                  >
                     <TypewriterEffect
                       handleContinueClick={handleContinueClick}
                       words={element}
@@ -376,32 +383,33 @@ function App() {
                       setIsTyping={setIsTyping}
                       isTyping={isTyping}
                     />
+
+                    {showCursorState && (
+                      <p className="text-left">
+                        <Cursor />
+                      </p>
+                    )}
+
+                    {showCursorState && showNextQuestion && (
+                      <>
+                        <a
+                          id="continueButton"
+                          className="cursor-pointer"
+                          onClick={handleContinueClick}
+                        >
+                          Click here to continue
+                        </a>
+                      </>
+                    )}
                   </div>
                 </>
               );
             }
           })}
-        {showCursorState && (
-          <p className="text-left">
-            <Cursor />
-          </p>
-        )}
 
-        {showCursorState && showNextQuestion && (
-          <>
-            <a
-              id="continueButton"
-              className="cursor-pointer"
-              onClick={handleContinueClick}
-            >
-              Click here to continue
-            </a>
-          </>
-        )}
         <div className="min-h-64">
           <br />
         </div>
-        <div id="toScrollTo" ref={scrollInto}></div>
       </div>
     </>
   );
