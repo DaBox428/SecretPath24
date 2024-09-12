@@ -13,9 +13,8 @@ const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
 function App() {
-  const [loginValue, setLoginValue] = useState(
-    decodeURIComponent(document.cookie)
-  );
+  let cookies = decodeURIComponent(document.cookie).split('|');
+  const [loginValue, setLoginValue] = useState(cookies[0]);
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
 
@@ -92,8 +91,10 @@ function App() {
     const userPerficientMail = loginValue.toLowerCase();
 
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
-
-    document.cookie = userPerficientMail.trim();
+    let cookies = decodeURIComponent(document.cookie).split('|');
+    if (cookies.length != 2){
+      document.cookie = userPerficientMail.trim() + "|1.0";
+    }
 
     let loginObjectToSendPost = {
       index: 0,
@@ -252,10 +253,7 @@ function App() {
           <AnimatedCounter
             containerStyles={{
               flex: true,
-
-              paddingBottom: "8px",
-
-              // paddingBottom: "8px",
+              marginBottom: "8px",
             }}
             value={lifePoints.toFixed(0)}
             color="white"
