@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const CustomAudioPlayer = ({ src, isVisible, onPlay, onPause, autoPlay}) => {
+const CustomAudioPlayer = ({ src, isVisible, onPlay, onPause, startAutoPlay}) => {
   const [isPlaying, setIsPlaying] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(startAutoPlay);
   const audioRef = useRef(null);
 
   useEffect(() => {
@@ -13,8 +14,10 @@ const CustomAudioPlayer = ({ src, isVisible, onPlay, onPause, autoPlay}) => {
   const togglePlayPause = () => {
     if (isPlaying) {
       audioRef.current.pause();
+      setAutoPlay(false);
     } else {
       audioRef.current.play();
+      setAutoPlay(true);
     }
   };
 
