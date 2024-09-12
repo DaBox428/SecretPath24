@@ -13,7 +13,9 @@ const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
 function App() {
-  const [loginValue, setLoginValue] = useState(decodeURIComponent(document.cookie));
+  const [loginValue, setLoginValue] = useState(
+    decodeURIComponent(document.cookie)
+  );
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
 
@@ -36,6 +38,8 @@ function App() {
   const modalRef = useRef();
   const loginModalRef = useRef();
   const scrollInto = useRef();
+
+  const [audioCurrentTime, setAudioCurrentTime] = useState("0:00");
 
   const validEmail = new RegExp(
     "^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$"
@@ -219,13 +223,15 @@ function App() {
           }
         })
         .catch((error) => {
-          console.log("error ->", error);
+          console.log("error ->", error.response.status);
           if (error.response.status) {
             if (error.response.status == 417) {
               handleMyError(
                 "Thats not the right answer",
                 error.response.data.score
               );
+            } else {
+              handleMyError(error, -1);
             }
           } else {
             handleMyError(error, -1);
@@ -246,8 +252,7 @@ function App() {
           <AnimatedCounter
             containerStyles={{
               flex: true,
-              flexDirection: "row",
-              flexGrow: 2,
+
               // paddingBottom: "8px",
             }}
             value={lifePoints.toFixed(0)}
@@ -260,6 +265,8 @@ function App() {
             src={currentAudio}
             isVisible={true}
             startAutoPlay={false}
+            setAudioCurrentTime={setAudioCurrentTime}
+            audioCurrentTime={audioCurrentTime}
           />
         </div>
       </div>
@@ -292,6 +299,13 @@ function App() {
 
         <div className="grid ">
           <input
+            autoFocus
+            onKeyUp={(e) => {
+              if (e.key === "Enter") {
+                console.log(e.key);
+                handleSendAnswer();
+              }
+            }}
             placeholder="Enter your answer"
             className="flex m-auto mt-4 rounded-md p-1.5 w-64  "
             type="text"
@@ -331,6 +345,7 @@ function App() {
           </a>
           <button
             id="sendAnswer"
+            type="submit"
             onClick={() => handleSendAnswer()}
             className="bg-[#b3b3b3] p-3 m-4 rounded hover:bg-[#535353] grow-0"
           >

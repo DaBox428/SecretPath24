@@ -17,8 +17,7 @@ const LoginDialogue = forwardRef(
       <dialog
         id="loginModal"
         ref={loginModalRef}
-        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm"
-        style={{ textTransform: "lowercase", overflowX: "hidden" }}
+        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden"
         onClose={(e) => {}}
         onKeyDown={(e) => {
           if (e.nativeEvent.key == "Escape") {
@@ -43,6 +42,12 @@ const LoginDialogue = forwardRef(
           className="flex m-auto mt-4 rounded-md p-1.5 w-64"
           type="email"
           value={loginValue}
+          autoFocus
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              handleSendLogin();
+            }
+          }}
           onChange={(e) => {
             setLoginValue(e.target.value);
           }}
@@ -67,6 +72,8 @@ const LoginDialogue = forwardRef(
           <button
             id="login"
             name="login"
+            type="submit"
+            autoFocus
             tabIndex={0}
             onClick={handleSendLogin}
             className="bg-[#b3b3b3] p-3 rounded hover:bg-[#535353]"
