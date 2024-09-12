@@ -13,7 +13,7 @@ const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
 function App() {
-  const [loginValue, setLoginValue] = useState("");
+  const [loginValue, setLoginValue] = useState(decodeURIComponent(document.cookie));
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
 
@@ -88,6 +88,8 @@ function App() {
     const userPerficientMail = loginValue.toLowerCase();
 
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
+
+    document.cookie = userPerficientMail.trim();
 
     let loginObjectToSendPost = {
       index: 0,
@@ -257,9 +259,7 @@ function App() {
           <CustomAudioPlayer
             src={currentAudio}
             isVisible={true}
-            autoPlay={autoPlay}
-            onPlay={() => setAutoPlay(true)}
-            onPause={() => setAutoPlay(false)}
+            startAutoPlay={false}
           />
         </div>
       </div>
