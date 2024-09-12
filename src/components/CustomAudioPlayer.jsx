@@ -5,6 +5,9 @@ import DirectionsWalkIcon from "@mui/icons-material/DirectionsWalk";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import PauseIcon from "@mui/icons-material/Pause";
 
+import FastRewindIcon from "@mui/icons-material/FastRewind";
+import FastForwardIcon from "@mui/icons-material/FastForward";
+
 const CustomAudioPlayer = ({
   src,
   isVisible,
@@ -97,20 +100,32 @@ const CustomAudioPlayer = ({
 
   return (
     <div className="">
-      <div className="fixed bottom-4 right-5 flex items-center bg-slate-500 p-4 rounded-3xl shadow-md flex-col">
-        <div>
-          <audio
-            ref={audioRef}
-            src={src}
-            autoPlay={autoPlay}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onTimeUpdate={timeUpdate}
-          />
-        </div>
-        <div id="durationDiv" className="bg-black p-2 rounded-3xl px-6">
-          {fancyTimeFormat(audioCurrentTime)} / {fancyTimeFormat(audioDuration)}
-        </div>
+      <div>
+        <audio
+          ref={audioRef}
+          src={src}
+          autoPlay={autoPlay}
+          onPlay={handlePlay}
+          onPause={handlePause}
+          onTimeUpdate={timeUpdate}
+          on
+        />
+      </div>
+      <div id="durationDiv" className="bg-black p-2 rounded-3xl px-6">
+        {fancyTimeFormat(audioCurrentTime)} / {fancyTimeFormat(audioDuration)}
+      </div>
+      <div>
+        <button
+          onClick={() => {
+            console.log("on rewind");
+            audioRef.current.src = "";
+            audioRef.current.src = src;
+          }}
+          className="bg-black hover:bg-blue-700 text-white font-bold p-2 rounded-full focus:outline-none focus:shadow-outline m-1 align-middle"
+        >
+          <FastRewindIcon style={{ fontSize: "15px" }} />
+        </button>
+
         <button
           onClick={togglePlayPause}
           className="bg-black hover:bg-blue-700 text-white font-bold p-3 rounded-full focus:outline-none focus:shadow-outline m-1"
@@ -122,31 +137,38 @@ const CustomAudioPlayer = ({
               <PlayArrowIcon className="" />
             )}
           </span>
-          <div></div>
         </button>
-        <div
-          id="playbackSpeedDiv"
-          className="bg-black flex flex-row  p-1 rounded-3xl"
-        >
-          <button
-            className="hover:bg-blue-700 rounded-3xl p-2"
-            onClick={() => {
-              handlePlaybackRate("slower");
-            }}
-          >
-            <DirectionsWalkIcon />
-          </button>
-          <div className="m-auto min-h-6 min-w-8">{audioObject}</div>
 
-          <button
-            className="hover:bg-blue-700 rounded-3xl p-2 flex-row"
-            onClick={() => {
-              handlePlaybackRate("faster");
-            }}
-          >
-            <DirectionsRunIcon />
-          </button>
-        </div>
+        <button
+          onClick={null}
+          className="bg-black  text-slate-500 font-bold p-2 rounded-full focus:outline-none focus:shadow-outline m-1 align-middle cursor-default"
+        >
+          <FastForwardIcon style={{ fontSize: "15px" }} />
+        </button>
+      </div>
+
+      <div
+        id="playbackSpeedDiv"
+        className="bg-black flex flex-row  p-1 rounded-3xl"
+      >
+        <button
+          className="hover:bg-blue-700 rounded-3xl p-2"
+          onClick={() => {
+            handlePlaybackRate("slower");
+          }}
+        >
+          <DirectionsWalkIcon />
+        </button>
+        <div className="m-auto min-h-6 min-w-8">{audioObject}</div>
+
+        <button
+          className="hover:bg-blue-700 rounded-3xl p-2 flex-row"
+          onClick={() => {
+            handlePlaybackRate("faster");
+          }}
+        >
+          <DirectionsRunIcon />
+        </button>
       </div>
     </div>
   );

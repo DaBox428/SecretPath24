@@ -253,6 +253,8 @@ function App() {
             containerStyles={{
               flex: true,
 
+              paddingBottom: "8px",
+
               // paddingBottom: "8px",
             }}
             value={lifePoints.toFixed(0)}
