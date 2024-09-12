@@ -246,8 +246,7 @@ function App() {
               flex: true,
               flexDirection: "row",
               flexGrow: 2,
-
-              paddingBottom: "8px",
+              // paddingBottom: "8px",
             }}
             value={lifePoints.toFixed(0)}
             color="white"
@@ -357,7 +356,7 @@ function App() {
               return (
                 <div
                   id="page"
-                  className=" mb-10 top-0 left-1/2 bg-[#121212]  min-w-[800px] max-w-[1500px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
+                  className=" mb-10 top-0 left-1/2 bg-[#121212] w-[800px] min-w-[800px] max-w-[800px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
                 >
                   <div
                     key={element}
@@ -373,7 +372,7 @@ function App() {
                   <div
                     key={element}
                     id="page"
-                    className=" top-0 left-1/2 bg-[#121212]  min-w-[800px] max-w-[1500px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
+                    className=" top-0 left-1/2 bg-[#121212]  w-[800px] min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
                   >
                     <TypewriterEffect
                       handleContinueClick={handleContinueClick}
