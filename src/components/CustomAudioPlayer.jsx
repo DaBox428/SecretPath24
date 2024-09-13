@@ -45,7 +45,9 @@ const CustomAudioPlayer = ({
 
   useEffect(() => {
     setTimeout(() => {
+      let cookies = decodeURIComponent(document.cookie).split('|');
       if (src) {
+        audioRef.current.playbackRate = cookies[1];
         setAudioObject(audioRef.current.playbackRate);
         setAudioDuration(audioRef.current.duration);
         setAudioCurrentTime(audioRef.current.currentTime);
@@ -74,18 +76,19 @@ const CustomAudioPlayer = ({
   };
 
   const handlePlaybackRate = (speed) => {
-    console.log("current speed =>", audioObject, "you want to: ", speed);
+    let cookies = decodeURIComponent(document.cookie).split('|');
+    console.log("current speed =>", audioObject, "you want to: ", speed, "cookie: ", cookies);
 
-    if (audioRef.current.playbackRate == 1.5 && speed == "faster") {
+    if (audioRef.current.playbackRate == 2.0 && speed == "faster") {
       return;
-    } else if (audioRef.current.playbackRate == 0.5 && speed == "slower") {
+    } else if (audioRef.current.playbackRate == 1.0 && speed == "slower") {
       return;
     } else if (speed == "slower") {
       audioRef.current.playbackRate = audioRef.current.playbackRate - 0.5;
     } else if (speed == "faster") {
       audioRef.current.playbackRate = audioRef.current.playbackRate + 0.5;
     }
-
+    document.cookie = cookies[0] + "|" + audioRef.current.playbackRate;
     setAudioObject(audioRef.current.playbackRate);
   };
 
