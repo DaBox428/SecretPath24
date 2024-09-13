@@ -36,10 +36,10 @@ const LoginDialogue = forwardRef(
             }}
           />
         )}
-        <h1 className="text-[#b3b3b3] text-center text-xl">Username:</h1>
+        <h1 className="text-[#b3b3b3] text-center text-xl m-auto">Username:</h1>
         <input
           placeholder="Enter your perficient email... "
-          className="flex m-auto mt-4 rounded-md p-1.5 w-64"
+          className="flex m-auto mt-4 rounded-md p-1.5 lg:w-64 min-w-32"
           type="email"
           value={loginValue}
           autoFocus

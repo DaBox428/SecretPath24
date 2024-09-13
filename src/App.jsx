@@ -13,7 +13,11 @@ const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
 function App() {
+<<<<<<< HEAD
   let cookies = decodeURIComponent(document.cookie).split('|');
+=======
+  let cookies = decodeURIComponent(document.cookie).split("|");
+>>>>>>> refs/remotes/origin/main
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
@@ -91,8 +95,8 @@ function App() {
     const userPerficientMail = loginValue.toLowerCase();
 
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
-    let cookies = decodeURIComponent(document.cookie).split('|');
-    if (cookies.length != 2){
+    let cookies = decodeURIComponent(document.cookie).split("|");
+    if (cookies.length != 2) {
       document.cookie = userPerficientMail.trim() + "|1.0";
     }
 
@@ -232,10 +236,7 @@ function App() {
   }
   return (
     <>
-      <div
-        className="text-slate-300 fixed m-2 p-5 z-20 right-5 rounded-3xl px-8 my-24
-      bg-slate-500 "
-      >
+      <div className="bg-slate-500 text-slate-300 fixed z-20  rounded-3xl lg:px-8 right-5 lg:my-5 lg:m-2 lg:p-5 bottom-0 px-14 py-4 mr-28 ">
         <div className="text-center text-white ">
           Attempts:
           <AnimatedCounter
@@ -359,7 +360,11 @@ function App() {
                 <div
                   id="page"
                   key={index}
+<<<<<<< HEAD
                   className="mb-10 top-0 left-1/2 bg-[#121212] w-[800px] min-w-[800px] max-w-[800px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
+=======
+                  className="mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32  min-w-[700px]"
+>>>>>>> refs/remotes/origin/main
                 >
                   <div
                     key={element}
@@ -375,7 +380,7 @@ function App() {
                   <div
                     key={element}
                     id="page"
-                    className=" top-0 left-1/2 bg-[#121212]  w-[800px] min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
+                    className="lg:mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32 min-w-[700px] mb-20"
                   >
                     <TypewriterEffect
                       handleContinueClick={handleContinueClick}
