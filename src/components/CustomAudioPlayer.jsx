@@ -77,7 +77,6 @@ const CustomAudioPlayer = ({
 
   const handlePlaybackRate = (speed) => {
     let cookies = decodeURIComponent(document.cookie).split('|');
-    console.log("current speed =>", audioObject, "you want to: ", speed, "cookie: ", cookies);
 
     if (audioRef.current.playbackRate == 2.0 && speed == "faster") {
       return;
@@ -97,7 +96,6 @@ const CustomAudioPlayer = ({
   }
 
   const timeUpdate = (event) => {
-    console.log("event", event.target.currentTime);
     setAudioCurrentTime(event.target.currentTime);
   };
 
@@ -111,7 +109,6 @@ const CustomAudioPlayer = ({
           onPlay={handlePlay}
           onPause={handlePause}
           onTimeUpdate={timeUpdate}
-          on
         />
       </div>
       <div id="durationDiv" className="bg-black p-2 rounded-3xl px-6">
@@ -120,7 +117,6 @@ const CustomAudioPlayer = ({
       <div>
         <button
           onClick={() => {
-            console.log("on rewind");
             audioRef.current.src = "";
             audioRef.current.src = src;
           }}
