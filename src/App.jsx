@@ -14,7 +14,7 @@ const baseURL =
 
 function App() {
   let cookies = decodeURIComponent(document.cookie).split('|');
-  const [loginValue, setLoginValue] = useState(cookies[0]);
+  const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
 
@@ -101,7 +101,6 @@ function App() {
       hash: cipherText.toString() /* userPerficientMail.trim() + userAgent.trim() */,
       perficientEmail: userPerficientMail.trim(),
     };
-    console.log("loginObjectToSendPost", loginObjectToSendPost);
 
     //regex email
     if (!validEmail.test(userPerficientMail)) {
@@ -119,11 +118,9 @@ function App() {
           .post(baseURL + "login", loginObjectToSendPost, { timeout: 15000 })
 
           .then((response) => {
-            console.log("response python", response.data);
             let currentQuestion = response.data.currentQuestion;
 
             if (currentQuestion.toLowerCase().includes("deja tu feedback")) {
-              console.log("current question from login => ", currentQuestion);
               setShowNextQuestion(false);
               setShowCursorState(false);
             } else {
@@ -144,19 +141,16 @@ function App() {
             loginModalRef.current?.close();
 
             setTimeout(() => {
-              console.log("scroll into");
               scrollIntoView();
             }, "400");
           })
           .catch((error) => {
-            console.log(error);
             if (error.code === "ECONNABORTED") {
               handleMyError("Request timed out", -1);
             } else if (error.response.status == 500) {
               handleMyError("Request failed, please try again in a while", -1);
             } else {
               handleMyError(error.message, -1);
-              console.log(error.message);
             }
           });
       };
@@ -171,7 +165,6 @@ function App() {
     const userPerficientMail = loginValue.toLowerCase();
 
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
-    console.log("current index", currentIndex);
     let answerObjectToPost = {
       id: currentIndex,
 
@@ -186,7 +179,6 @@ function App() {
       axios
         .post(baseURL + "answer", answerObjectToPost, { timeout: 15000 })
         .then((response) => {
-          console.log("response", response);
           if (response.status == 200) {
             /* setLoadingSpinner(false); */
             //si devuelve 400 sigue el modal, salga un texto rojo que diga que esta mal
@@ -195,7 +187,6 @@ function App() {
             setTextContent((oldArray) => [...oldArray, response.data.newText]);
             setCurrentQuestion(response.data.newQuestion);
 
-            console.log("newquestion", !response.data.newQuestion);
             if (!response.data.newQuestion) {
               setShowNextQuestion(false);
             }
@@ -203,11 +194,9 @@ function App() {
             setLoadingSpinner(false);
             setCurrentIndex(response.data.newIndex);
             setTimeout(() => {
-              console.log("scroll into asnwer");
               scrollIntoView();
             }, "400");
           } else if (response.status == 206) {
-            console.log("response del answer", response.data);
             response.data.newQuestion.length > 150
               ? setTooMuchQuestion(true)
               : setTooMuchQuestion(false);
@@ -224,7 +213,6 @@ function App() {
           }
         })
         .catch((error) => {
-          console.log("error ->", error.response.status);
           if (error.response.status) {
             if (error.response.status == 417) {
               handleMyError(
@@ -302,7 +290,6 @@ function App() {
             autoFocus
             onKeyUp={(e) => {
               if (e.key === "Enter") {
-                console.log(e.key);
                 handleSendAnswer();
               }
             }}
@@ -371,7 +358,8 @@ function App() {
               return (
                 <div
                   id="page"
-                  className=" mb-10 top-0 left-1/2 bg-[#121212] w-[800px] min-w-[800px] max-w-[800px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
+                  key={index}
+                  className="mb-10 top-0 left-1/2 bg-[#121212] w-[800px] min-w-[800px] max-w-[800px]   min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16"
                 >
                   <div
                     key={element}
@@ -383,7 +371,7 @@ function App() {
             } else {
               return (
                 <>
-                  <div id="toScrollTo" ref={scrollInto}></div>
+                  <div key={index} id="toScrollTo" ref={scrollInto}></div>
                   <div
                     key={element}
                     id="page"
