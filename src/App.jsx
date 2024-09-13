@@ -232,10 +232,7 @@ function App() {
   }
   return (
     <>
-      <div
-        className="bg-slate-500 text-slate-300 fixed z-20  rounded-3xl lg:px-8 right-5 lg:my-5 lg:m-2 lg:p-5 bottom-0 px-14 py-4 mr-28
-      "
-      >
+      <div className="bg-slate-500 text-slate-300 fixed z-20  rounded-3xl lg:px-8 right-5 lg:my-5 lg:m-2 lg:p-5 bottom-0 px-14 py-4 mr-28 ">
         <div className="text-center text-white ">
           Attempts:
           <AnimatedCounter

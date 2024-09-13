@@ -45,7 +45,7 @@ const CustomAudioPlayer = ({
 
   useEffect(() => {
     setTimeout(() => {
-      let cookies = decodeURIComponent(document.cookie).split('|');
+      let cookies = decodeURIComponent(document.cookie).split("|");
       if (src) {
         audioRef.current.playbackRate = cookies[1];
         setAudioObject(audioRef.current.playbackRate);
@@ -76,7 +76,7 @@ const CustomAudioPlayer = ({
   };
 
   const handlePlaybackRate = (speed) => {
-    let cookies = decodeURIComponent(document.cookie).split('|');
+    let cookies = decodeURIComponent(document.cookie).split("|");
 
     if (audioRef.current.playbackRate == 2.0 && speed == "faster") {
       return;
@@ -100,7 +100,7 @@ const CustomAudioPlayer = ({
   };
 
   return (
-    <div className="">
+    <div className="flex lg:flex-col">
       <div>
         <audio
           ref={audioRef}
