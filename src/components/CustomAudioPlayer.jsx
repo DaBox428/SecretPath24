@@ -111,8 +111,13 @@ const CustomAudioPlayer = ({
           onTimeUpdate={timeUpdate}
         />
       </div>
-      <div id="durationDiv" className="bg-black p-2 rounded-3xl px-6">
-        {fancyTimeFormat(audioCurrentTime)} / {fancyTimeFormat(audioDuration)}
+      <div
+        id="durationDiv"
+        className="bg-black p-2 rounded-3xl px-6 align-bottom m-auto"
+      >
+        <p>
+          {fancyTimeFormat(audioCurrentTime)} / {fancyTimeFormat(audioDuration)}
+        </p>
       </div>
       <div>
         <button

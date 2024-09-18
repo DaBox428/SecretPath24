@@ -17,7 +17,7 @@ const LoginDialogue = forwardRef(
       <dialog
         id="loginModal"
         ref={loginModalRef}
-        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden"
+        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden min-w-96"
         onClose={(e) => {}}
         onKeyDown={(e) => {
           if (e.nativeEvent.key == "Escape") {
@@ -36,10 +36,12 @@ const LoginDialogue = forwardRef(
             }}
           />
         )}
-        <h1 className="text-[#b3b3b3] text-center text-xl m-auto">Username:</h1>
+        <h1 className="text-[#b3b3b3] text-center text-xl m-auto min-w-48">
+          Username:
+        </h1>
         <input
           placeholder="Enter your perficient email... "
-          className="flex m-auto mt-4 rounded-md p-1.5 lg:w-64 min-w-32"
+          className="flex m-auto mt-4 rounded-md p-1.5 lg:w-64 min-w-48"
           type="email"
           value={loginValue}
           autoFocus
@@ -76,7 +78,7 @@ const LoginDialogue = forwardRef(
             autoFocus
             tabIndex={0}
             onClick={handleSendLogin}
-            className="bg-[#b3b3b3] p-3 rounded hover:bg-[#535353]"
+            className="bg-[#b3b3b3] p-3 rounded hover:bg-[#535353] min-w-48"
           >
             Log In
           </button>

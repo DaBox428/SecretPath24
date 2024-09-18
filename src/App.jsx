@@ -232,27 +232,29 @@ function App() {
   }
   return (
     <>
-      <div className="bg-slate-500 text-slate-300 fixed z-20  rounded-3xl lg:px-8 right-5 lg:my-5 lg:m-2 lg:p-5 bottom-0 px-14 py-4 mr-28 ">
-        <div className="text-center text-white ">
-          Attempts:
-          <AnimatedCounter
-            containerStyles={{
-              flex: true,
-              marginBottom: "8px",
-            }}
-            value={lifePoints.toFixed(0)}
-            color="white"
-            fontSize="40px"
-            decimalPrecision={0}
-            incrementColor="red"
-          />
-          <CustomAudioPlayer
-            src={currentAudio}
-            isVisible={true}
-            startAutoPlay={false}
-            setAudioCurrentTime={setAudioCurrentTime}
-            audioCurrentTime={audioCurrentTime}
-          />
+      <div className="flex justify-center flex-col align-middle ">
+        <div className="bg-slate-500 text-slate-300 fixed z-20  rounded-3xl lg:px-8  lg:my-5 lg:m-2 lg:p-5  bottom-0 px-14 py-4  right-0 mr-3 mb-3">
+          <div className="text-center text-white ">
+            Attempts:
+            <AnimatedCounter
+              containerStyles={{
+                flex: true,
+                marginBottom: "8px",
+              }}
+              value={lifePoints.toFixed(0)}
+              color="white"
+              fontSize="40px"
+              decimalPrecision={0}
+              incrementColor="red"
+            />
+            <CustomAudioPlayer
+              src={currentAudio}
+              isVisible={true}
+              startAutoPlay={false}
+              setAudioCurrentTime={setAudioCurrentTime}
+              audioCurrentTime={audioCurrentTime}
+            />
+          </div>
         </div>
       </div>
       {modalOpen == "main" && (
@@ -348,7 +350,7 @@ function App() {
         setLoginValue={setLoginValue}
         loadingSpinner={loadingSpinner}
       />
-      <div className="absolute ml-56 mr-56">
+      <div className="flex items-center justify-center flex-col">
         {loaded &&
           textContent.map((element, index) => {
             if (textContent.length > index + 1) {
@@ -356,7 +358,7 @@ function App() {
                 <div
                   id="page"
                   key={index}
-                  className="mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32  min-w-[700px]"
+                  className="mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32 ml-32 min-w-[500px] lg:ml-32"
                 >
                   <div
                     key={element}
@@ -372,7 +374,7 @@ function App() {
                   <div
                     key={element}
                     id="page"
-                    className="lg:mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32 min-w-[700px] mb-20"
+                    className="mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32 ml-32 min-w-[500px] lg:ml-32"
                   >
                     <TypewriterEffect
                       handleContinueClick={handleContinueClick}
