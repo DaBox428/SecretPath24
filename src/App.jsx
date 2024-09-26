@@ -120,7 +120,7 @@ function App() {
           .then((response) => {
             let currentQuestion = response.data.currentQuestion;
 
-            if (currentQuestion.toLowerCase().includes("deja tu feedback")) {
+            if (!currentQuestion || currentQuestion.toLowerCase().includes("deja tu feedback")) {
               setShowNextQuestion(false);
               setShowCursorState(false);
             } else {
