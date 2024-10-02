@@ -8,7 +8,6 @@ import { AnimatedCounter } from "react-animated-counter";
 import { AES, enc, MD5 } from "crypto-js";
 import LoginDialogue from "./components/LoginDialogue";
 import CustomAudioPlayer from "./components/CustomAudioPlayer";
-import { useParams } from 'react-router-dom'; // Import useParams
 
 const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
@@ -16,6 +15,10 @@ const baseURL =
 function App() {
   let cookies = decodeURIComponent(document.cookie).split("|");
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
+  const [langChecked, setLangChecked] = useState("es");
+
+  const [pinValue, setPinValue] = useState(cookies[0] || "");
+
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
 
@@ -47,7 +50,6 @@ function App() {
 
   // const [searchParams, setSearchParams] = useSearchParams(); // Get search parameters
   // const lang = searchParams.get('lang') || 'en'; // Get language from URL, default to 'en'
-  const { lang } = useParams(); // Get language from URL parameter
 
   function handleContinueClick() {
     modalRef.current?.showModal();
@@ -92,9 +94,9 @@ function App() {
   }
   // POST LOGIN
   function handleSendLogin() {
-    const userAgent = navigator.userAgent.toLowerCase();
+    const userAgent = pinValue;
     const userPerficientMail = loginValue.toLowerCase();
-
+    console.log("eeeea", userPerficientMail.trim() + userAgent.trim());
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
     let cookies = decodeURIComponent(document.cookie).split("|");
     if (cookies.length != 2) {
@@ -105,7 +107,7 @@ function App() {
       index: 0,
       hash: cipherText.toString() /* userPerficientMail.trim() + userAgent.trim() */,
       perficientEmail: userPerficientMail.trim(),
-      lang: lang
+      lang: langChecked,
     };
 
     //regex email
@@ -117,6 +119,10 @@ function App() {
       enqueueSnackbar("Please enter a valid perficient email", {
         variant: "error",
       });
+    } else if (pinValue.length === 0) {
+      enqueueSnackbar("Please enter a valid PIN", {
+        variant: "error",
+      });
     } else {
       const fetchingLoginData = () => {
         setLoadingSpinner(true);
@@ -126,7 +132,10 @@ function App() {
           .then((response) => {
             let currentQuestion = response.data.currentQuestion;
 
-            if (!currentQuestion || currentQuestion.toLowerCase().includes("deja tu feedback")) {
+            if (
+              !currentQuestion ||
+              currentQuestion.toLowerCase().includes("deja tu feedback")
+            ) {
               setShowNextQuestion(false);
               setShowCursorState(false);
             } else {
@@ -167,16 +176,17 @@ function App() {
 
   //POST ANSWER
   function handleSendAnswer() {
-    const userAgent = navigator.userAgent.toLowerCase();
+    const userAgent = pinValue;
     const userPerficientMail = loginValue.toLowerCase();
 
+    console.log("eeeea", userPerficientMail.trim() + userAgent.trim());
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
     let answerObjectToPost = {
       id: currentIndex,
       perficientEmail: userPerficientMail,
       hash: cipherText.toString(),
       answer: answerValue.toUpperCase().trim(),
-      lang: lang
+      lang: langChecked,
     };
 
     setModalOpen("answer");
@@ -241,7 +251,8 @@ function App() {
       <div className="flex justify-center flex-col align-middle ">
         <div className="bg-slate-500 text-slate-300 fixed z-20  rounded-3xl lg:px-8  lg:my-5 lg:m-2 lg:p-5  bottom-0 px-14 py-4  right-0 mr-3 mb-3">
           <div className="text-center text-white ">
-            Attempts:
+            {langChecked == "es" ? "Intentos:" : "Attempts:"}
+
             <AnimatedCounter
               containerStyles={{
                 flex: true,
@@ -355,6 +366,10 @@ function App() {
         loginValue={loginValue}
         setLoginValue={setLoginValue}
         loadingSpinner={loadingSpinner}
+        langChecked={langChecked}
+        setLangChecked={setLangChecked}
+        setPinValue={setPinValue}
+        pinValue={pinValue}
       />
       <div className="flex items-center justify-center flex-col">
         {loaded &&
@@ -404,7 +419,9 @@ function App() {
                           className="cursor-pointer"
                           onClick={handleContinueClick}
                         >
-                          Click here to continue
+                          {langChecked == "es"
+                            ? "Click aqui para continuar..."
+                            : "Click here to continue..."}
                         </a>
                       </>
                     )}
