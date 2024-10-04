@@ -14,7 +14,7 @@ const baseURL =
 
 function App() {
   const pageStyling =
-    "top-0 left-1/2 bg-[#121212] border border-[#64748b] text-center sm:min-h-screen max-w-screen sm:max-w-[800px] mb-10 pb-24 sm:min-w-[800px] min-w-[400px] p-10 sm:p-16 ";
+    "top-0 sm:left-1/2 bg-[#121212] border border-[#64748b] text-center sm:min-h-screen max-w-full sm:max-w-[800px] mb-10 pb-24 sm:min-w-[800px] min-w-[350px] p-10 sm:p-16 m-3";
   let cookies = decodeURIComponent(document.cookie).split("|");
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [langChecked, setLangChecked] = useState("es");
@@ -98,7 +98,7 @@ function App() {
   function handleSendLogin() {
     const userAgent = pinValue;
     const userPerficientMail = loginValue.toLowerCase();
-    console.log("eeeea", userPerficientMail.trim() + userAgent.trim());
+
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
     let cookies = decodeURIComponent(document.cookie).split("|");
     if (cookies.length != 2) {
@@ -181,7 +181,6 @@ function App() {
     const userAgent = pinValue;
     const userPerficientMail = loginValue.toLowerCase();
 
-    console.log("eeeea", userPerficientMail.trim() + userAgent.trim());
     const cipherText = MD5(userPerficientMail.trim() + userAgent.trim(), "OZ");
     let answerObjectToPost = {
       id: currentIndex,
@@ -250,38 +249,37 @@ function App() {
   }
   return (
     <>
-      <div id="all" className="">
-        <div
-          id="fixed"
-          className="bg-slate-500 text-slate-300 fixed z-20 rounded-3xl sm:px-8  sm:my-5 sm:m-2 sm:p-5 sm:pb-28 bottom-0  max-h-48 sm:right-0 sm:max-h-72 m-5 p-5 flex flex-col grow"
-        >
-          <div className="text-center text-white text-sm sm:text-lg  sm:p-0 flex grow flex-col">
-            {langChecked == "es" ? "Intentos:" : "Attempts:"}
+      <div
+        id="fixed"
+        className="bg-slate-500 text-slate-300 fixed z-20 rounded-3xl sm:px-8  sm:my-5 sm:m-2 sm:p-5 sm:pb-28 bottom-0  max-h-48 sm:right-0 sm:max-h-72 m-5 p-5 flex flex-col grow "
+      >
+        <div className="text-center text-white text-sm sm:text-lg  sm:p-0 flex grow flex-col">
+          {langChecked == "es" ? "Intentos:" : "Attempts:"}
 
-            <AnimatedCounter
-              containerStyles={{
-                flex: true,
-                flexDirection: "column",
-                marginBottom: "10px",
-              }}
-              value={lifePoints.toFixed(0)}
-              color="white"
-              fontSize="40px"
-              decimalPrecision={0}
-              incrementColor="red"
+          <AnimatedCounter
+            containerStyles={{
+              flex: true,
+              flexDirection: "column",
+              marginBottom: "10px",
+            }}
+            value={lifePoints.toFixed(0)}
+            color="white"
+            fontSize="40px"
+            decimalPrecision={0}
+            incrementColor="red"
+          />
+          {modalOpen != "login" && (
+            <CustomAudioPlayer
+              src={currentAudio}
+              isVisible={true}
+              startAutoPlay={false}
+              setAudioCurrentTime={setAudioCurrentTime}
+              audioCurrentTime={audioCurrentTime}
             />
-            {modalOpen != "login" && (
-              <CustomAudioPlayer
-                src={currentAudio}
-                isVisible={true}
-                startAutoPlay={false}
-                setAudioCurrentTime={setAudioCurrentTime}
-                audioCurrentTime={audioCurrentTime}
-              />
-            )}
-          </div>
+          )}
         </div>
       </div>
+
       {modalOpen == "main" && (
         <SnackbarProvider
           anchorOrigin={{
@@ -379,7 +377,7 @@ function App() {
         setPinValue={setPinValue}
         pinValue={pinValue}
       />
-      <div className="flex items-center justify-center flex-col">
+      <div className="flex flex-col w-1/3 m-3">
         {loaded &&
           textContent.map((element, index) => {
             if (textContent.length > index + 1) {
@@ -431,7 +429,7 @@ function App() {
             }
           })}
 
-        <div className="min-h-64">
+        <div className="min-h-64 max-w-full">
           <br />
         </div>
       </div>

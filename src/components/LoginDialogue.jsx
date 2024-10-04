@@ -48,6 +48,9 @@ const LoginDialogue = forwardRef(
         )}
         <div className=" flex flex-col align-middle justify-center min-w-48 gap-5 m-16">
           <div id="inputs" className="flex sm:flex-row flex-col">
+            <h1 className="font-sans text-slate-300 text-center text-2xl mb-3">
+              Welcome to <br /> Secret Path 2024
+            </h1>
             <input
               placeholder={
                 langChecked == "es" ? "Nombre de Usuario..." : "Username..."
