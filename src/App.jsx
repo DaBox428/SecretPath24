@@ -17,7 +17,7 @@ function App() {
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [langChecked, setLangChecked] = useState("es");
 
-  const [pinValue, setPinValue] = useState(cookies[1] || "");
+  const [pinValue, setPinValue] = useState("");
 
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
