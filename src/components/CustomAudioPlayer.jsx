@@ -113,28 +113,28 @@ const CustomAudioPlayer = ({
       </div>
       <div
         id="durationDiv"
-        className="bg-black p-2 rounded-3xl px-6 align-bottom m-auto"
+        className="bg-black p-2 rounded-3xl px-6 align-bottom m-auto text-sm sm:text-lg"
       >
         <p>
           {fancyTimeFormat(audioCurrentTime)} / {fancyTimeFormat(audioDuration)}
         </p>
       </div>
-      <div>
+      <div className="flex flex-row shrink m-3 sm:m-0">
         <button
           onClick={() => {
             audioRef.current.src = "";
             audioRef.current.src = src;
           }}
-          className="bg-black hover:bg-blue-700 text-white font-bold p-2 rounded-full focus:outline-none focus:shadow-outline m-1 align-middle"
+          className="bg-black hover:bg-blue-700 text-white font-bold p-2 rounded-full focus:outline-none focus:shadow-outline m-1 align-middle  "
         >
           <FastRewindIcon style={{ fontSize: "15px" }} />
         </button>
 
         <button
           onClick={togglePlayPause}
-          className="bg-black hover:bg-blue-700 text-white font-bold p-3 rounded-full focus:outline-none focus:shadow-outline m-1"
+          className="bg-black hover:bg-blue-700 text-white font-bold p-3 rounded-full focus:outline-none focus:shadow-outline m-1  "
         >
-          <span className="size-5 font-sans">
+          <span className=" font-sans">
             {isPlaying ? (
               <PauseIcon className="" />
             ) : (
@@ -145,7 +145,7 @@ const CustomAudioPlayer = ({
 
         <button
           onClick={null}
-          className="bg-black  text-slate-500 font-bold p-2 rounded-full focus:outline-none focus:shadow-outline m-1 align-middle cursor-default"
+          className="bg-black  text-slate-500 font-bold p-2 rounded-full focus:outline-none focus:shadow-outline m-1 align-middle cursor-default  "
         >
           <FastForwardIcon style={{ fontSize: "15px" }} />
         </button>
@@ -163,7 +163,7 @@ const CustomAudioPlayer = ({
         >
           <DirectionsWalkIcon />
         </button>
-        <div className="m-auto min-h-6 min-w-8">{audioObject}</div>
+        <div className="m-auto ">{audioObject}</div>
 
         <button
           className="hover:bg-blue-700 rounded-3xl p-2 flex-row"

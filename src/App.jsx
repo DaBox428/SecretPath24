@@ -14,7 +14,7 @@ const baseURL =
 
 function App() {
   const pageStyling =
-    "top-0 left-1/2 bg-[#121212] border border-[#64748b] text-center sm:min-h-screen max-w-[800px] mb-10 pb-24 sm:min-w-[800px] min-w-[400px] p-10 sm:p-16";
+    "top-0 left-1/2 bg-[#121212] border border-[#64748b] text-center sm:min-h-screen max-w-[800px] mb-10 pb-24 sm:min-w-[800px] min-w-[400px] p-10 sm:p-16 ";
   let cookies = decodeURIComponent(document.cookie).split("|");
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [langChecked, setLangChecked] = useState("es");
@@ -250,15 +250,15 @@ function App() {
   }
   return (
     <>
-      <div className="flex justify-center flex-col align-middle ">
-        <div className="bg-slate-500 text-slate-300 fixed z-20  rounded-3xl lg:px-8  lg:my-5 lg:m-2 lg:p-5  bottom-0 px-14 py-4  right-0 mr-3 mb-3">
-          <div className="text-center text-white ">
+      <div className="flex flex-col flex-nowrap">
+        <div className="bg-slate-500 text-slate-300 fixed z-20 rounded-3xl sm:px-8  sm:my-5 sm:m-2 sm:p-5 pb-28 bottom-0  max-h-48 sm:right-0 sm:max-h-72 m-5">
+          <div className="text-center text-white text-sm sm:text-lg p-5 sm:p-0">
             {langChecked == "es" ? "Intentos:" : "Attempts:"}
 
             <AnimatedCounter
               containerStyles={{
                 flex: true,
-                marginBottom: "8px",
+                marginBottom: "10px",
               }}
               value={lifePoints.toFixed(0)}
               color="white"
@@ -287,7 +287,7 @@ function App() {
       <dialog
         id="answerModal"
         ref={modalRef}
-        className="p-24 border bg-[#121212] rounded-2xl max-w-xl backdrop:bg-black/10 backdrop:backdrop-blur-[2px]"
+        className="z-10 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden min-w-80 m-auto  sm:p-28 p-10"
       >
         {modalOpen == "answer" && (
           <SnackbarProvider
