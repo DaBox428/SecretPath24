@@ -100,7 +100,7 @@ const CustomAudioPlayer = ({
   };
 
   return (
-    <div className="flex lg:flex-col">
+    <div className="flex lg:flex-col  grow ">
       <div>
         <audio
           ref={audioRef}
@@ -113,7 +113,7 @@ const CustomAudioPlayer = ({
       </div>
       <div
         id="durationDiv"
-        className="bg-black p-2 rounded-3xl px-6 align-bottom m-auto text-sm sm:text-lg"
+        className="bg-black p-2 rounded-3xl px-6 align-bottom m-auto text-sm sm:text-lg "
       >
         <p>
           {fancyTimeFormat(audioCurrentTime)} / {fancyTimeFormat(audioDuration)}

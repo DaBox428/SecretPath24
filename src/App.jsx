@@ -14,7 +14,7 @@ const baseURL =
 
 function App() {
   const pageStyling =
-    "top-0 left-1/2 bg-[#121212] border border-[#64748b] text-center sm:min-h-screen max-w-[800px] mb-10 pb-24 sm:min-w-[800px] min-w-[400px] p-10 sm:p-16 ";
+    "top-0 left-1/2 bg-[#121212] border border-[#64748b] text-center sm:min-h-screen max-w-screen sm:max-w-[800px] mb-10 pb-24 sm:min-w-[800px] min-w-[400px] p-10 sm:p-16 ";
   let cookies = decodeURIComponent(document.cookie).split("|");
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [langChecked, setLangChecked] = useState("es");
@@ -250,14 +250,18 @@ function App() {
   }
   return (
     <>
-      <div className="flex flex-col flex-nowrap">
-        <div className="bg-slate-500 text-slate-300 fixed z-20 rounded-3xl sm:px-8  sm:my-5 sm:m-2 sm:p-5 pb-28 bottom-0  max-h-48 sm:right-0 sm:max-h-72 m-5">
-          <div className="text-center text-white text-sm sm:text-lg p-5 sm:p-0">
+      <div id="all" className="">
+        <div
+          id="fixed"
+          className="bg-slate-500 text-slate-300 fixed z-20 rounded-3xl sm:px-8  sm:my-5 sm:m-2 sm:p-5 sm:pb-28 bottom-0  max-h-48 sm:right-0 sm:max-h-72 m-5 p-5 flex flex-col grow"
+        >
+          <div className="text-center text-white text-sm sm:text-lg  sm:p-0 flex grow flex-col">
             {langChecked == "es" ? "Intentos:" : "Attempts:"}
 
             <AnimatedCounter
               containerStyles={{
                 flex: true,
+                flexDirection: "column",
                 marginBottom: "10px",
               }}
               value={lifePoints.toFixed(0)}
@@ -266,13 +270,15 @@ function App() {
               decimalPrecision={0}
               incrementColor="red"
             />
-            <CustomAudioPlayer
-              src={currentAudio}
-              isVisible={true}
-              startAutoPlay={false}
-              setAudioCurrentTime={setAudioCurrentTime}
-              audioCurrentTime={audioCurrentTime}
-            />
+            {modalOpen != "login" && (
+              <CustomAudioPlayer
+                src={currentAudio}
+                isVisible={true}
+                startAutoPlay={false}
+                setAudioCurrentTime={setAudioCurrentTime}
+                audioCurrentTime={audioCurrentTime}
+              />
+            )}
           </div>
         </div>
       </div>
