@@ -13,6 +13,8 @@ const baseURL =
   "https://scarlettbot-api.azurewebsites.net/scarlett?endpoint=secretPath&code=5cHCdyevhBV7FA3LRNQ8QdYXexGw3Cw5BgWsUsKc8R18cG&route=";
 
 function App() {
+  const pageStyling =
+    "top-0 left-1/2 bg-[#121212] border border-[#64748b] text-center sm:min-h-screen max-w-[800px] mb-10 pb-24 sm:min-w-[800px] min-w-[400px] p-10 sm:p-16";
   let cookies = decodeURIComponent(document.cookie).split("|");
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [langChecked, setLangChecked] = useState("es");
@@ -376,11 +378,7 @@ function App() {
           textContent.map((element, index) => {
             if (textContent.length > index + 1) {
               return (
-                <div
-                  id="page"
-                  key={index}
-                  className="mb-10 top-0 left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 sm:pl-28 pl:16 mr-32 ml-32 min-w-[500px] lg:ml-32 m-auto"
-                >
+                <div id="page" key={index} className={pageStyling}>
                   <div
                     key={element}
                     dangerouslySetInnerHTML={{ __html: element }}
@@ -392,11 +390,7 @@ function App() {
               return (
                 <>
                   <div key={index} id="toScrollTo" ref={scrollInto}></div>
-                  <div
-                    key={element}
-                    id="page"
-                    className="mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32 ml-32 min-w-[500px] lg:ml-32"
-                  >
+                  <div key={element} id="page" className={pageStyling}>
                     <TypewriterEffect
                       handleContinueClick={handleContinueClick}
                       words={element}

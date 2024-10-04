@@ -27,7 +27,7 @@ const LoginDialogue = forwardRef(
       <dialog
         id="loginModal"
         ref={loginModalRef}
-        className="z-10 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden min-w-80 m-auto px-16 py-36 sm:p-28"
+        className="z-10 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden min-w-80 m-auto  sm:p-28"
         onClose={(e) => {}}
         onKeyDown={(e) => {
           if (e.nativeEvent.key == "Escape") {
@@ -46,7 +46,7 @@ const LoginDialogue = forwardRef(
             }}
           />
         )}
-        <div className=" flex flex-col align-middle justify-center min-w-48 gap-5">
+        <div className=" flex flex-col align-middle justify-center min-w-48 gap-5 m-16">
           <div id="inputs" className="flex sm:flex-row flex-col">
             <input
               placeholder={
