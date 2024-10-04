@@ -27,7 +27,7 @@ const LoginDialogue = forwardRef(
       <dialog
         id="loginModal"
         ref={loginModalRef}
-        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden min-w-96"
+        className="z-10 p-24 border bg-[#121212] rounded-2xl backdrop:bg-black/40 backdrop:backdrop-blur-sm overflow-hidden min-w-80 m-auto"
         onClose={(e) => {}}
         onKeyDown={(e) => {
           if (e.nativeEvent.key == "Escape") {
@@ -49,13 +49,13 @@ const LoginDialogue = forwardRef(
 
         <h1 className="text-[#b3b3b3] text-center text-xl m-auto min-w-48"></h1>
 
-        <div id="inputs" className="flex flex-row pb-5">
+        <div id="inputs" className="flex sm:flex-row pb-5 flex-col">
           <input
             placeholder={
               langChecked == "es" ? "Nombre de Usuario..." : "Username..."
             }
             title={langChecked == "es" ? "Nombre de Usuario..." : "Username..."}
-            className=" flex-auto m-auto mt-4 rounded-md p-1.5 lg:w-64 min-w-48 w-64"
+            className=" flex-auto m-auto mt-4 rounded-md p-1.5 lg:w-64 min-w-48 w-64 "
             type="email"
             value={loginValue}
             autoFocus
@@ -70,7 +70,7 @@ const LoginDialogue = forwardRef(
           />
           <input
             placeholder="PIN"
-            className=" flex-auto m-auto mt-4 rounded-md p-1.5  w-20 ml-3"
+            className=" flex-auto m-auto mt-4 rounded-md p-1.5  w-20 sm:ml-3"
             type="text"
             autoFocus
             value={pinValue}

@@ -17,7 +17,7 @@ function App() {
   const [loginValue, setLoginValue] = useState(cookies[0] || "");
   const [langChecked, setLangChecked] = useState("es");
 
-  const [pinValue, setPinValue] = useState(cookies[0] || "");
+  const [pinValue, setPinValue] = useState(cookies[1] || "");
 
   const [answerValue, setAnswerValue] = useState("");
   const [lifePoints, setLifePoints] = useState(0);
@@ -379,7 +379,7 @@ function App() {
                 <div
                   id="page"
                   key={index}
-                  className="mb-10 top-0 lg:left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 pl-16 mr-32 ml-32 min-w-[500px] lg:ml-32"
+                  className="mb-10 top-0 left-1/2 bg-[#121212] lg:w-[800px] lg:min-w-[800px] max-w-[800px]  min-h-screen border-[#64748b] border text-center pt-8 pr-16 pb-24 sm:pl-28 pl:16 mr-32 ml-32 min-w-[500px] lg:ml-32 m-auto"
                 >
                   <div
                     key={element}
